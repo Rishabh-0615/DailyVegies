@@ -1,5 +1,6 @@
 import express from 'express';
 import { isAuthAdmin } from '../middlewares/isAdminAuth.js';
+import { isAuth } from '../middlewares/isAuth.js';
 import {
   getUnverifiedFarmers,
   verifyFarmer,
@@ -13,7 +14,8 @@ import {
   assignDeliveryBoy,
   getAssignedDeliveriesByCity,
   getDeliveryStatsByCity,
-  updateDeliveryStatus
+  updateDeliveryStatus,
+  getPersonalDeliveries
 } from '../controllers/adminControllers.js';
 
 const router = express.Router();
@@ -31,5 +33,6 @@ router.put("/assign-delivery", isAuthAdmin, assignDeliveryBoy);
 router.post("/assignedDeliveriesByCity",isAuthAdmin,getAssignedDeliveriesByCity)
 router.post("/deliveryStatsByCity",isAuthAdmin,getDeliveryStatsByCity)
 router.put("/updateDeliveryStatus",isAuthAdmin,updateDeliveryStatus)
+router.get("/get-personal-orders",isAuth,getPersonalDeliveries);
 
 export default router;

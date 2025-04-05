@@ -15,4 +15,5 @@ router.get("/:id",isAuth,userProfile);
 router.put("/updateProfile",isAuth,updateProfile)
 
 
+
 export default router;

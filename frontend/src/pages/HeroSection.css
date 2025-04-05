@@ -1,0 +1,14 @@
+@keyframes slideIn {
+    0% {
+      transform: translateX(100%); /* Start off the screen */
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .slide-right {
+    animation: slideIn 1s ease-in-out;
+  }

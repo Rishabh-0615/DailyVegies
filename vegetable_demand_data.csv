@@ -1,0 +1,9 @@
+vegetable,available_quantity,previous_demand,price_per_unit,season,day_type,demand
+Tomato,100,80,50,Spring,Weekday,90
+Potato,200,150,45,Spring,Weekend,180
+Carrot,150,120,48,Spring,Weekday,140
+Spinach,180,160,55,Spring,Weekend,170
+Tomato,130,100,52,Summer,Weekday,120
+Potato,140,110,47,Summer,Weekend,130
+Carrot,160,130,49,Summer,Weekday,150
+Spinach,170,140,56,Summer,Weekend,160

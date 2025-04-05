@@ -11,7 +11,6 @@ import { Admin } from "../models/adminModel.js";
 import generateToken from "../middlewares/generateToken.js";
 import { OrderDetails } from "../models/orderDetailsModel.js";
 import { Product } from "../models/productModel.js";
-import mongoose from "mongoose";
 dotenv.config();
 
 
@@ -239,8 +238,6 @@ export const getAllBoys = TryCatch(async (req, res) => {
 }
 );
 
-const TEMP_USERS = {};
-
 export const assignDeliveryBoy = async (req, res) => {
   try {
     const { orderId, deliveryBoyId } = req.body;
@@ -252,17 +249,8 @@ export const assignDeliveryBoy = async (req, res) => {
       });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(orderId) || !mongoose.Types.ObjectId.isValid(deliveryBoyId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Order ID or Delivery Boy ID.",
-      });
-    }
-
-    // Step 1: Fetch the order details
-    const order = await OrderDetails.findById(orderId)
-      .populate("cartItems.productId", "city")
-      .populate("userId", "name email phone address");
+    // Step 1: Get the order details
+    const order = await OrderDetails.findById(orderId).populate("cartItems.productId", "city");
 
     if (!order) {
       return res.status(404).json({
@@ -271,16 +259,17 @@ export const assignDeliveryBoy = async (req, res) => {
       });
     }
 
-    if (!order.cartItems.length || !order.cartItems[0]?.productId?.city) {
+    // Step 2: Get the city of the order (first product's city)
+    const orderCity = order.cartItems[0]?.productId.city;
+
+    if (!orderCity) {
       return res.status(400).json({
         success: false,
         message: "City information is missing in the order.",
       });
     }
 
-    const orderCity = order.cartItems[0].productId.city;
-
-    // Step 2: Check if the delivery boy exists in the same city
+    // Step 3: Check if the delivery boy belongs to the same city
     const deliveryBoy = await User.findOne({ _id: deliveryBoyId, role: "delivery boy", location: orderCity });
 
     if (!deliveryBoy) {
@@ -290,68 +279,70 @@ export const assignDeliveryBoy = async (req, res) => {
       });
     }
 
-    // Step 3: Assign the delivery boy to the order
+    // Step 4: Assign the delivery boy to the order
     order.deliveryBoyId = deliveryBoyId;
-    order.deliveryStatus = "OUT_FOR_DELIVERY";
+    order.deliveryStatus = "OUT_FOR_DELIVERY"; // Update delivery status
     await order.save();
-
-    // Step 4: Generate OTP and Send Email
-    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Numeric 6-digit OTP
-    const expiresAt = Date.now() + 5 * 60 * 1000; // OTP valid for 5 minutes
-
-    TEMP_USERS[order.userId.email] = { otp, expiresAt };
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      secure: true,
-      auth: {
-        user: process.env.MY_GMAIL,
-        pass: process.env.MY_PASS,
-      },
-    });
-
-    try {
-      await transporter.sendMail({
-        from: process.env.MY_GMAIL,
-        to: order.userId.email,
-        subject: "Your OTP Code",
-        text: `Your OTP is: ${otp}`,
-      });
-    } catch (error) {
-      console.error("Error sending OTP:", error);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to send OTP",
-        error: error.message,
-      });
-    }
 
     res.status(200).json({
       success: true,
-      message: "Delivery boy assigned successfully. OTP sent for verification.",
+      message: "Delivery boy assigned successfully.",
       order,
     });
-
   } catch (error) {
     console.error("Error assigning delivery boy:", error);
     res.status(500).json({
       success: false,
       message: "Internal Server Error",
-      error: error.message,
     });
   }
 };
+export const getPersonalDeliveries = TryCatch(async (req, res) => {
+  const  userId  = req.user._id; // Change from req.body to req.query
 
-
-export const getAssignedDeliveries = TryCatch(async (req, res) => {
-  const { deliveryBoyId } = req.params;
-
-  if (!deliveryBoyId) {
+  if (!userId) {
     return res.status(400).json({
       success: false,
-      message: "Delivery Boy ID is required as a parameter",
+      message: "Delivery Boy ID is required",
     });
   }
+
+  try {
+    // Find orders assigned to this delivery personnel
+    const assignedOrders = await OrderDetails.find({ deliveryBoyId: userId })
+      .populate("userId", "name email phone address")
+      .populate("cartItems.productId", "name price city");
+
+    if (!assignedOrders || assignedOrders.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No assigned deliveries found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      count: assignedOrders.length,
+      assignedOrders,
+    });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+export const getAssignedDeliveries = TryCatch(async (req, res) => {
+//   const { deliveryBoyId } = req.params;
+
+//   if (!deliveryBoyId) {
+//     return res.status(400).json({
+//       success: false,
+//       message: "Delivery Boy ID is required as a parameter",
+//     });
+//   }
 
   // Verify the delivery boy exists
   const deliveryBoy = await User.findOne({

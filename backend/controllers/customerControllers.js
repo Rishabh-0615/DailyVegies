@@ -16,7 +16,7 @@ export const addCart = TryCatch(async (req, res) => {
   const { productId, quantity, price, remove } = req.body;
 
   if (!productId) return res.status(400).json({ error: "Product ID is required" });
-  if (!quantity || quantity <= 0) return res.status(400).json({ error: "Invalid quantity" });
+  //if (!quantity || quantity <= 0) return res.status(400).json({ error: "Invalid quantity" });
   if (price !== undefined && price < 0) return res.status(400).json({ error: "Invalid price" });
 
   console.log("Incoming request data:", req.body);
