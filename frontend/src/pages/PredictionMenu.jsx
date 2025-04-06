@@ -119,7 +119,7 @@ const PredictionMenu = () => {
 
         {/* Crop Disease Prediction Card */}
         <div 
-          onClick={() => navigate("/disease-prediction")}
+          onClick={() => navigate("/predict-dis")}
           className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer border border-green-100 hover:border-green-300 transform hover:-translate-y-2"
         >
           <div className="p-6">

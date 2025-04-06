@@ -52,6 +52,8 @@ import DeliveryNavbar from "./components/deliveryNavbar";
 import FarmerForum from "./pages/Forum";
 import Satelite from "./pages/Satelite";
 import MyFarmCrops from "./components/MyFarmCrops";
+import DiseasePredictionPage from "./pages/PredictDisease";
+
 
 const App = () => {
   const { user, loading, isAuth,isAuthAdmin } = UserData();
@@ -188,6 +190,7 @@ const AppWithLocation = ({ user, isAuth ,isAuthAdmin}) => {
         <Route path="/forum" element={<FarmerForum/>} />
         <Route path="/satelite" element={<Satelite/>} />
         <Route path="/weather" element={<MyFarmCrops/>}/>
+        <Route path ="/predict-dis" element={<DiseasePredictionPage />} />
       </Routes>
     </>
   );
