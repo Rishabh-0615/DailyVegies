@@ -1,20 +1,28 @@
+// models/crop.js
 import mongoose from "mongoose";
 
-const schema = new mongoose.Schema(
-  {
-    cropName: String,
-    sowingDate: Date,
-    expectedHarvest: Date,
-    location: {
-      lat: Number,
-      lon: Number
-    },
-    address: String,
-    userId: mongoose.Schema.Types.ObjectId // if auth implemented
+const cropSchema = new mongoose.Schema({
+  cropName: {
+    type: String,
+    required: true,
+  },
+  sowingDate: {
+    type: Date,
+    required: true,
+  },
+  expectedHarvest: {
+    type: Date,
+    required: true,
+  },
+  location: {
+    lat: Number,
+    lon: Number,
+  },
+  address: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   }
-);
+});
 
-export const Crop = mongoose.model("Crop", schema);
-
-
-
+export const Crop = mongoose.model("Crop", cropSchema);

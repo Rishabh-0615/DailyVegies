@@ -1,6 +1,8 @@
-import  express from 'express'
-const router = express.Router();
+import express from 'express';
 import { addCrop, getMyCrops } from "../controllers/cropController.js";
+
+const router = express.Router();
+
 router.post("/add", addCrop);
 router.get("/my-crops", getMyCrops);
 
