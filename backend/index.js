@@ -63,9 +63,9 @@ app.get("*", (req, res) => {
 
   
 // 🌐 Flask API URLs
-const FLASK_API_URL_PRICE = 'http://localhost:5001/predict-price';
-const FLASK_API_URL_DEMAND = 'http://localhost:5001/predict-demand';
-const FLASK_API_URL_DISEASE = 'http://localhost:5001/predict-disease';
+const FLASK_API_URL_PRICE = 'https://dailyvegies-zz5b.onrender.com/predict-price';
+const FLASK_API_URL_DEMAND = 'https://dailyvegies-zz5b.onrender.com/predict-demand';
+const FLASK_API_URL_DISEASE = 'https://dailyvegies-zz5b.onrender.com/predict-disease';
 
 // 🔎 Validation Middleware
 const validatePredictionInput = (req, res, next) => {
