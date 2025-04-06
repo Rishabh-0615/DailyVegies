@@ -5,3 +5,4 @@ pandas
 joblib
 tensorflow
 gunicorn
+scikit-learn
