@@ -7,7 +7,10 @@ import cookieParser from 'cookie-parser';
 import cloudinary from 'cloudinary';
 import axios from 'axios';
 import cors from 'cors';
+import multer from 'multer';
 import Razorpay from 'razorpay';
+import fs from 'fs';
+import FormData from 'form-data';
 dotenv.config();
 const port=process.env.PORT || 5000;
 
@@ -28,12 +31,17 @@ import userRoutes from './routes/userRoutes.js';
 import farmerRoutes from './routes/farmerRoutes.js'
 import customerRoutes from './routes/customerRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import sateliteRoutes from './routes/satelliteRoutes.js'
+import forumRoutes from './routes/forumRoutes.js'
 
 
 app.use("/api/user",userRoutes);
 app.use("/api/user/farmer",farmerRoutes)
 app.use("/api/user/customer",customerRoutes)
 app.use("/api/admin", adminRoutes)
+app.use("/api/satellite", sateliteRoutes)
+app.use("/api/forum", forumRoutes)
+
 
 
 import weatherRoutes from '../backend/routes/weatherRoutes.js'
@@ -53,12 +61,13 @@ app.get("*", (req, res) => {
 
 
 
+  
+// 🌐 Flask API URLs
 const FLASK_API_URL_PRICE = 'http://localhost:5001/predict-price';
 const FLASK_API_URL_DEMAND = 'http://localhost:5001/predict-demand';
+const FLASK_API_URL_DISEASE = 'http://localhost:5001/predict-disease';
 
-
-
-
+// 🔎 Validation Middleware
 const validatePredictionInput = (req, res, next) => {
   const requiredFields = ['Vegetable', 'Temperature', 'Rainfall', 'Seasonal Factor', 'Fuel Price'];
   const missingFields = requiredFields.filter(field => !req.body[field]);
@@ -70,7 +79,6 @@ const validatePredictionInput = (req, res, next) => {
     });
   }
 
-  
   const numericFields = ['Temperature', 'Rainfall', 'Seasonal Factor', 'Fuel Price'];
   for (const field of numericFields) {
     const value = parseFloat(req.body[field]);
@@ -80,20 +88,20 @@ const validatePredictionInput = (req, res, next) => {
         message: `Invalid value for ${field}: must be a non-negative number`
       });
     }
-    req.body[field] = value; 
+    req.body[field] = value;
   }
 
   next();
 };
 
-
+// 📈 Price Prediction Route
 app.post('/api/predict-price', validatePredictionInput, async (req, res) => {
   try {
     const response = await axios.post(FLASK_API_URL_PRICE, req.body);
-    return res.json(response.data);
+    res.json(response.data);
   } catch (error) {
-    console.error('Error calling Flask API for price prediction:', error);
-    return res.status(500).json({
+    console.error('Price prediction error:', error.message);
+    res.status(500).json({
       status: 'error',
       message: 'Failed to get price prediction',
       error: error.response?.data || error.message
@@ -101,14 +109,14 @@ app.post('/api/predict-price', validatePredictionInput, async (req, res) => {
   }
 });
 
-
+// 📊 Demand Prediction Route
 app.post('/api/predict-demand', validatePredictionInput, async (req, res) => {
   try {
     const response = await axios.post(FLASK_API_URL_DEMAND, req.body);
-    return res.json(response.data);
+    res.json(response.data);
   } catch (error) {
-    console.error('Error calling Flask API for demand prediction:', error);
-    return res.status(500).json({
+    console.error('Demand prediction error:', error.message);
+    res.status(500).json({
       status: 'error',
       message: 'Failed to get demand prediction',
       error: error.response?.data || error.message
@@ -116,17 +124,37 @@ app.post('/api/predict-demand', validatePredictionInput, async (req, res) => {
   }
 });
 
+// 🌿 Disease Prediction Route
+const upload = multer({ dest: 'uploads/' });
 
-app.post("/api/predict", async (req, res) => {
+app.post('/api/predict-disease', upload.single('file'), async (req, res) => {
   try {
-    const response = await axios.post("http://127.0.0.1:5001/predict", {
-      text: req.body.text,
+    const filePath = req.file.path;
+    const formData = new FormData();
+    formData.append('file', fs.createReadStream(filePath), {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype
     });
+
+    const response = await axios.post(FLASK_API_URL_DISEASE, formData, {
+      headers: formData.getHeaders()
+    });
+
+    fs.unlinkSync(filePath); // Clean up uploaded file
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Error communicating with Flask server" });
+    console.error('Disease prediction error:', error.message);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to get disease prediction',
+      error: error.response?.data || error.message
+    });
   }
 });
+
+  
+ 
+
 
 
 
@@ -430,5 +458,3 @@ app.listen(port , ()=>{
     console.log(`Server is running on http://localhost:${port}`);
     connectDb();
 })
-
-

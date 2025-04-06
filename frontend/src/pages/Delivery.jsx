@@ -176,7 +176,7 @@ const Deliveryboy = () => {
             <Truck className="mr-2" /> Delivery Dashboard
           </motion.h1>
 
-          <motion.div 
+          {/* <motion.div 
             className="bg-green-50 border border-green-200 p-4 rounded-lg mb-6 text-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -186,7 +186,7 @@ const Deliveryboy = () => {
             <div>Orders count: {assignedOrders.length}</div>
             <div>Loading state: {loading ? 'Loading...' : 'Completed'}</div>
             {error && <div className="text-red-500">Error: {error}</div>}
-          </motion.div>
+          </motion.div> */}
 
           {currentLocation && (
             <motion.div 

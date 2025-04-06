@@ -24,7 +24,6 @@ import Empty from "./pages/Empty";
 import Account from "./pages/Account";
 import Model from './pages/Model'
 import OrderDetails from "./pages/OrderDetails";
-
 import AdminLogin from "./pages/AdminLogin";
 import UserOrdersPage from "./components/RouteMap";
 import OrderList from "./components/RouteMap";
@@ -49,7 +48,7 @@ import Predict from "./pages/Predict";
 import PredictionMenu from "./pages/PredictionMenu";
 import Deliveryboy from "./pages/Delivery";
 import PathWayGenerator from "./pages/PathwayGenerator";
-import DeliveryNavbar from "./components/deliveryNavba
+import DeliveryNavbar from "./components/deliveryNavbar";
 import FarmerForum from "./pages/Forum";
 import Satelite from "./pages/Satelite";
 import MyFarmCrops from "./components/MyFarmCrops";
