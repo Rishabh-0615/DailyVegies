@@ -141,7 +141,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import LocationAutocomplete from '../components/LocationAutocomplete';
-import '../styles/weather.css'
+//import '../styles/weather.css'
 
 const CropCard = ({ crop }) => {
   const [showForecast, setShowForecast] = useState(false);
@@ -282,43 +282,10 @@ export default function MyFarmCrops() {
 
   return (
     <div className="min-h-screen bg-green-100">
-      <header className="bg-green-500 text-white shadow-md">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center">
-            <img src="/api/placeholder/40/40" alt="DailyVegies Logo" className="h-10 w-10 rounded-md mr-2" />
-            <h1 className="text-xl font-bold">DailyVegies</h1>
-          </div>
-          <nav className="flex space-x-6">
-            <a href="#" className="hover:text-green-200 transition-colors">Home</a>
-            <a href="#" className="hover:text-green-200 transition-colors">Order</a>
-            <a href="#" className="hover:text-green-200 transition-colors">All Orders</a>
-            <a href="#" className="hover:text-green-200 transition-colors">AI Chatbot</a>
-            <a href="#" className="hover:text-green-200 transition-colors flex items-center">
-              <span>Logout</span>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm12 4.586L12.707 6.29a1 1 0 00-1.414 1.42L12.586 9H7a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 101.414 1.414L15 11.414V7.586z" clipRule="evenodd" />
-              </svg>
-            </a>
-          </nav>
-        </div>
-      </header>
+      
 
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="bg-green-500 text-white p-8 rounded-lg shadow-lg mb-8 relative overflow-hidden">
-          <div className="flex flex-col md:flex-row justify-between">
-            <div className="md:w-1/2 z-10">
-              <h1 className="text-3xl font-bold mb-4">Supporting Local Farmers</h1>
-              <p className="text-lg mb-6">Empowering farmers with sustainable practices and fair trade opportunities</p>
-              <div className="flex space-x-4">
-                <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-md">Join Us</button>
-                <button className="bg-white hover:bg-gray-100 text-green-700 px-6 py-2 rounded-lg font-medium transition-colors shadow-md">Learn More</button>
-              </div>
-            </div>
-            <div className="md:w-1/2 mt-4 md:mt-0 flex justify-center md:justify-end z-10">
-              <img src="/api/placeholder/300/200" alt="Farm stand illustration" className="h-48" />
-            </div>
-          </div>
-        </div>
+        
         
         <h2 className="text-2xl font-bold mb-6 text-green-800">My Farm Crops</h2>
         
