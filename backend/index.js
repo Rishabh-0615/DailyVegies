@@ -36,7 +36,11 @@ app.use("/api/user/customer",customerRoutes)
 app.use("/api/admin", adminRoutes)
 
 
+import weatherRoutes from '../backend/routes/weatherRoutes.js'
+app.use("/api/weather", weatherRoutes);
 
+import cropRoutes from '../backend/routes/cropRoutes.js'
+app.use("/api/farm-crops", cropRoutes);
 
 const __dirname = path.resolve();
 
