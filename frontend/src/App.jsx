@@ -49,10 +49,10 @@ import Predict from "./pages/Predict";
 import PredictionMenu from "./pages/PredictionMenu";
 import Deliveryboy from "./pages/Delivery";
 import PathWayGenerator from "./pages/PathwayGenerator";
-import DeliveryNavbar from "./components/deliveryNavbar";
+import DeliveryNavbar from "./components/deliveryNavba
 import FarmerForum from "./pages/Forum";
 import Satelite from "./pages/Satelite";
-
+import MyFarmCrops from "./components/MyFarmCrops";
 
 const App = () => {
   const { user, loading, isAuth,isAuthAdmin } = UserData();
@@ -188,7 +188,7 @@ const AppWithLocation = ({ user, isAuth ,isAuthAdmin}) => {
         {/* <Route path="/try" element={<ThreeDLandingPage/>} /> */}
         <Route path="/forum" element={<FarmerForum/>} />
         <Route path="/satelite" element={<Satelite/>} />
-
+        <Route path="/weather" element={<MyFarmCrops/>}/>
       </Routes>
     </>
   );
