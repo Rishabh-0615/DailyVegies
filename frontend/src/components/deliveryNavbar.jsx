@@ -1,17 +1,12 @@
 import React, { useState } from "react";
-import { User, Menu, X, LogOut, Home } from "lucide-react";
+import { Menu, X, LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../context/UserContext";
 import toast from "react-hot-toast";
 import axios from "axios";
 import myimg from "../assets/logo.png";
-import FarmToTableChat from "../components/chat";
-import Model from "./Model";
-import FarmerOrders from "./FarmerOrders";
-import PredictionMenu from "./Predict";
-import PathWayGenerator from "./PathwayGenerator";
 
-const FarmerNavbar = () => {
+const DeliveryNavbar = () => {
   const navigate = useNavigate();
   const { setIsAuth, setUser } = UserData();
   const [isOpen, setIsOpen] = useState(false);
@@ -71,58 +66,10 @@ const FarmerNavbar = () => {
                 <ul className="flex flex-col lg:flex-row lg:space-x-4 p-2 lg:p-0">
                   <li>
                     <a
-                      href="/farmer"
+                      href="/delivery"
                       className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10 h-10"
                     >
                       <Home className="mr-0 h-7 w-7" />
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/mylistings"
-                      className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10"
-                    >
-                      My Listings
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/addproduct"
-                      className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10"
-                    >
-                      Add Product
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/farmerorder"
-                      className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10"
-                    >
-                      Orders
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/resource"
-                      className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10"
-                    >
-                      Resource Manager
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/chat"
-                      className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10"
-                    >
-                      AI ChatBot
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/predict"
-                      className="block px-4 py-2 text-[#faeedc] hover:text-white rounded-lg transition-all duration-200 transform hover:-translate-y-1 hover:shadow-lg hover:bg-white/10"
-                    >
-                      Predict
                     </a>
                   </li>
                   <li>
@@ -144,4 +91,4 @@ const FarmerNavbar = () => {
   );
 };
 
-export default FarmerNavbar;
+export default DeliveryNavbar;

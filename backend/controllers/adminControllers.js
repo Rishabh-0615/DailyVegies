@@ -309,7 +309,7 @@ export const getPersonalDeliveries = TryCatch(async (req, res) => {
 
   try {
     // Find orders assigned to this delivery personnel
-    const assignedOrders = await OrderDetails.find({ deliveryBoyId: userId })
+    const assignedOrders = await OrderDetails.find({ deliveryBoyId: userId,deliveryStatus: "OUT_FOR_DELIVERY" })
       .populate("userId", "name email phone address")
       .populate("cartItems.productId", "name price city");
 

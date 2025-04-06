@@ -7,11 +7,15 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import validator from 'validator';
+import { Order } from "../models/orderModel.js";
+import { OrderDetails } from "../models/orderDetailsModel.js";
+import { response } from "express";
 dotenv.config();
 process.env.NODE_TLS_REJECT_UNAUTHORIZED="0";
 
  // Temporary storage for unverified users
  const TEMP_USERS = {}; // Use Redis or a database for better scalability
+ const DELIVERY_OTPS = {};
 
 
 
@@ -368,6 +372,111 @@ export const userProfile= TryCatch(async(req,res)=>{
     res.json(user);
 
 })
+
+export const generateDeliveryOtp = TryCatch(async (req, res) => {
+  const { orderId } = req.body;
+  
+  // Find the order
+  const order = await OrderDetails.findById(orderId);
+
+  console.log(order);
+  
+  if (!order) {
+    return res.status(404).json({
+      message: "Order not found"
+    });
+  }
+
+  const user = await User.findById(order.userId);
+  
+  console.log(user);
+
+  // Generate OTP
+  const otp = crypto.randomInt(100000, 999999);
+  
+  // Store OTP with expiry (5 minutes)
+  DELIVERY_OTPS[orderId] = {
+    otp,
+    userEmail: user.email,
+    expiresAt: Date.now() + 5 * 60 * 1000
+  };
+  
+  // Send OTP via email
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    secure: true,
+    auth: {
+      user: process.env.MY_GMAIL,
+      pass: process.env.MY_PASS,
+    },
+  });
+  
+  try {
+    await transporter.sendMail({
+      from: process.env.MY_GMAIL,
+      to: user.email,
+      subject: "Your Delivery Confirmation OTP",
+      text: `Your OTP for order delivery confirmation is: ${otp}. Please share this with your delivery person to confirm delivery.`,
+    });
+    
+    res.status(200).json({
+      message: "OTP sent successfully to customer.",
+      success: true
+    });
+  } catch (error) {
+    console.error("Error sending delivery OTP:", error);
+    res.status(500).json({
+      message: "Failed to send OTP",
+      error: error.message
+    });
+  }
+});
+
+
+export const verifyDeliveryOtp = TryCatch(async (req, res) => {
+  const { orderId, otp } = req.body;
+  const status = await OrderDetails.findById(orderId);
+
+  // Check if OTP exists for this order
+  const otpData = DELIVERY_OTPS[orderId];
+  if (!otpData) {
+    return res.status(400).json({ 
+      message: "No OTP request found for this order",
+      success: false
+    });
+  }
+  
+  // Check if OTP is expired
+  if (otpData.expiresAt < Date.now()) {
+    delete DELIVERY_OTPS[orderId];
+    return res.status(400).json({ 
+      message: "OTP expired",
+      success: false
+    });
+  }
+  
+  // Verify OTP
+  if (parseInt(otpData.otp) !== parseInt(otp)) {
+    return res.status(400).json({ 
+      message: "Invalid OTP",
+      success: false
+    });
+  }
+  
+  // Update order status
+  status.deliveryStatus="DELIVERED";
+
+  await status.save();
+  
+  // Clean up OTP storage
+  delete DELIVERY_OTPS[orderId];
+  
+  res.status(200).json({
+    message: "Delivery confirmed successfully",
+    orderId,
+    success: true
+  });
+});
 
 export const logoutUser = TryCatch(async(req,res)=>{
     res.clearCookie("token");

@@ -30,7 +30,6 @@ import UserOrdersPage from "./components/RouteMap";
 import OrderList from "./components/RouteMap";
 
 import Delivery from "./pages/Delivery";
-import DeliveryNavbar from "./components/Delivery-Navbar";
 import FarmerOrders from "./pages/FarmerOrders";
 
 import VerifyFarmer from "./pages/VerifyFarmer";
@@ -49,6 +48,8 @@ import ThreeDLandingPage from "./pages/try";
 import Predict from "./pages/Predict";
 import PredictionMenu from "./pages/PredictionMenu";
 import Deliveryboy from "./pages/Delivery";
+import PathWayGenerator from "./pages/PathwayGenerator";
+import DeliveryNavbar from "./components/deliveryNavbar";
 
 const App = () => {
   const { user, loading, isAuth,isAuthAdmin } = UserData();
@@ -81,7 +82,7 @@ const AppWithLocation = ({ user, isAuth ,isAuthAdmin}) => {
       ) : showConsumerNavbar ? (
         <ConsumerNavbar />
       ) : showDeliveryNavbar ? (
-        <DeliveryNavbar />
+          <DeliveryNavbar />
       ) :showAdminNavbar?(
         <AdminNavbarNew/>
       ) :(
@@ -180,6 +181,7 @@ const AppWithLocation = ({ user, isAuth ,isAuthAdmin}) => {
         <Route path="/model1" element={<VegetablePricePredictor/>} /> 
         <Route path="/model2" element={<VegetableDemandPredictor/>} />
          <Route path="/predict" element={<PredictionMenu/>} />
+         <Route path="/resource" element = {isAuth ? <PathWayGenerator /> : <Home />} />
         {/* <Route path="/try" element={<ThreeDLandingPage/>} /> */}
         
 
